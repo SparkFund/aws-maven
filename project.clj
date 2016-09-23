@@ -1,4 +1,4 @@
-(defproject sparkfund/aws-maven "5.1.2"
+(defproject sparkfund/aws-maven "5.1.3"
   :description "Maven wagon for S3"
   :url "http://github.com/SparkFund/aws-maven"
   :license {:name "MIT License"
