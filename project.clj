@@ -10,7 +10,8 @@
 
   :min-lein-version "2.0.0"
 
-  :dependencies [[com.amazonaws/aws-java-s3 "1.11.36"]
+  :dependencies [[com.amazonaws/aws-java-sdk-core "1.11.36"]
+                 [com.amazonaws/aws-java-sdk-s3 "1.11.36"]
                  [org.apache.maven.wagon/wagon-provider-api "2.10"]
                  [org.clojure/clojure "1.8.0"]]
 
