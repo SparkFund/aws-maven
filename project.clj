@@ -1,4 +1,4 @@
-(defproject sparkfund/aws-maven "5.1.0"
+(defproject sparkfund/aws-maven "5.1.1"
   :description "Maven wagon for S3"
   :url "http://github.com/SparkFund/aws-maven"
   :license {:name "MIT License"
@@ -10,8 +10,8 @@
 
   :min-lein-version "2.0.0"
 
-  :dependencies [[com.amazonaws/aws-java-sdk-core "1.11.36"]
-                 [com.amazonaws/aws-java-sdk-s3 "1.11.36"]
+  :dependencies [[com.amazonaws/aws-java-sdk-core "1.9.40"]
+                 [com.amazonaws/aws-java-sdk-s3 "1.9.40"]
                  [org.apache.maven.wagon/wagon-provider-api "2.10"]
                  [org.clojure/clojure "1.8.0"]]
 
