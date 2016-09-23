@@ -1,4 +1,4 @@
-(defproject sparkfund/aws-maven "5.1.3"
+(defproject sparkfund/aws-maven "5.1.4"
   :description "Maven wagon for S3"
   :url "http://github.com/SparkFund/aws-maven"
   :license {:name "MIT License"
@@ -13,6 +13,8 @@
   :dependencies [[com.amazonaws/aws-java-sdk-core "1.9.40"
                   :exclusions [joda-time]]
                  [com.amazonaws/aws-java-sdk-s3 "1.9.40"
+                  :exclusions [joda-time]]
+                 [com.amazonaws/aws-java-sdk-sts "1.9.40"
                   :exclusions [joda-time]]
                  [joda-time "2.9.4"]
                  [org.apache.maven.wagon/wagon-provider-api "2.10"]

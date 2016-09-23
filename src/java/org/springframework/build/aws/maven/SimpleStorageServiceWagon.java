@@ -19,9 +19,8 @@ package org.springframework.build.aws.maven;
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.ClientConfiguration;
 import com.amazonaws.auth.AWSCredentialsProvider;
-import com.amazonaws.auth.AWSCredentialsProviderChain;
 import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
-import com.amazonaws.auth.profile.ProfileCredentialsProvider;
+import com.amazonaws.auth.STSAssumeRoleSessionCredentialsProvider;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.internal.Mimetypes;
@@ -46,8 +45,18 @@ import java.util.regex.Pattern;
  * <code>s3://static.springframework.org</code> would put files into the <code>static.springframework.org</code> bucket
  * on the S3 service.
  * <p/>
- * This implementation uses the <code>username</code> and <code>passphrase</code> portions of the server authentication
- * metadata for credentials.
+ * This implementation uses the default aws credentials provider chain, and
+ * will assume the role given in the env var
+ * <code>SPARKFUND_AWS_MAVEN_ROLE</code>
+ * if given.
+ *
+ * This explicit role assumption works around the current inconsitent behavior
+ * between the cli and the java sdk as noted here:
+ *
+ * https://github.com/aws/aws-sdk-java/issues/803
+ *
+ * Future implementations may want to revisit this when it is addressed and
+ * aws-maven is able to update to the latest java sdk versions.
  */
 public final class SimpleStorageServiceWagon extends AbstractWagon {
 
@@ -79,10 +88,14 @@ public final class SimpleStorageServiceWagon extends AbstractWagon {
     protected void connectToRepository(Repository repository, AuthenticationInfo authenticationInfo,
                                        ProxyInfoProvider proxyInfoProvider) throws AuthenticationException {
         if (this.amazonS3 == null) {
+            String role = System.getenv("SPARKFUND_AWS_MAVEN_ROLE");
             AWSCredentialsProvider credentialsProvider =
-                new AWSCredentialsProviderChain(new AuthenticationInfoAWSCredentialsProviderChain(authenticationInfo),
-                                                new ProfileCredentialsProvider("maven"),
-                                                new DefaultAWSCredentialsProviderChain());
+                (role != null && !("".equals(role)))
+                ? new STSAssumeRoleSessionCredentialsProvider(new DefaultAWSCredentialsProviderChain(),
+                                                              role,
+                                                              java.util.UUID.randomUUID().toString())
+                : new DefaultAWSCredentialsProviderChain();
+
             ClientConfiguration clientConfiguration = S3Utils.getClientConfiguration(proxyInfoProvider);
 
             this.bucketName = S3Utils.getBucketName(repository);
